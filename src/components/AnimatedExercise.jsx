@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
  * Smooth 2-frame animation using cross-fade opacity transitions.
  * Each frame stays visible for `holdMs` ms, then fades to the next over `fadeMs` ms.
  */
-export default function AnimatedExercise({ frames, alt, className, holdMs = 900, fadeMs = 600 }) {
+export default function AnimatedExercise({ frames, alt, className, holdMs = 2600, fadeMs = 400 }) {
   const [frame, setFrame]   = useState(0)   // which frame is "current"
   const [fading, setFading] = useState(false) // true during the cross-fade
   const [ready, setReady]   = useState(false)
@@ -103,6 +103,6 @@ AnimatedExercise.propTypes = {
 
 AnimatedExercise.defaultProps = {
   className: '',
-  holdMs: 900,
-  fadeMs: 600,
+  holdMs: 2600,
+  fadeMs: 400,
 }
