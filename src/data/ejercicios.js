@@ -73,7 +73,7 @@ export const EJERCICIOS = [
   { id: 'tri-07', nombre: 'Polea concentrado',             grupo: 'Tríceps',  equipamiento: 'Polea',         musculos: ['Tríceps'],                       imgUrl: `${BASE}/1298/ec4b83ec-5a8f-4303-9050-99ec4389bc2a.png` },
   { id: 'tri-08', nombre: 'Máquina de triceps',            grupo: 'Tríceps',  equipamiento: 'Máquina',       musculos: ['Tríceps'],                       imgUrl: `${BASE}/659/a60452f1-e2ea-43fe-baa6-c1a2208d060c.png` },
   { id: 'tri-09', nombre: 'Triceps francés c/barra',       grupo: 'Tríceps',  equipamiento: 'Barra',         musculos: ['Tríceps'],                       imgUrl: `${BASE}/84/Lying-close-grip-triceps-press-to-chin-1.png` },
-  { id: 'tri-10', nombre: 'Triceps francés c/manc',        grupo: 'Tríceps',  equipamiento: 'Mancuernas',    musculos: ['Tríceps'],                       imgUrl: `${BASE}/1519/fab7f641-27d4-40b5-8edd-1a0a137bfd94.gif` },
+  { id: 'tri-10', nombre: 'Triceps francés c/manc',        grupo: 'Tríceps',  equipamiento: 'Mancuernas',    musculos: ['Tríceps'],                       imgUrl: `${BASE}/1749/7510c8e5-b39f-4f0e-803c-c46f6357e267.png` },
   { id: 'tri-11', nombre: 'Triceps lagartija',             grupo: 'Tríceps',  equipamiento: 'Peso corporal', musculos: ['Tríceps'],                       imgUrl: `${BASE}/1551/a6a9e561-3965-45c6-9f2b-ee671e1a3a45.png` },
   { id: 'tri-12', nombre: 'Fondos paralelas',              grupo: 'Tríceps',  equipamiento: 'Peso corporal', musculos: ['Tríceps', 'Pectorales'],         imgUrl: `${BASE}/194/34600351-8b0b-4cb0-8daa-583537be15b0.png` },
   { id: 'tri-13', nombre: 'Fondos en el banco',            grupo: 'Tríceps',  equipamiento: 'Banco',         musculos: ['Tríceps'],                       imgUrl: `${BASE}/83/Bench-dips-1.png` },
@@ -81,7 +81,7 @@ export const EJERCICIOS = [
   { id: 'tri-15', nombre: 'Patada de burro manc',          grupo: 'Tríceps',  equipamiento: 'Mancuernas',    musculos: ['Tríceps'],                       imgUrl: `${BASE}/1336/ebf88217-df26-4ef7-94cb-f0c2220c6abe.webp` },
   { id: 'tri-16', nombre: 'Polea parado lateral',          grupo: 'Tríceps',  equipamiento: 'Polea',         musculos: ['Tríceps'],                       imgUrl: `${BASE}/1298/ec4b83ec-5a8f-4303-9050-99ec4389bc2a.png` },
   { id: 'tri-17', nombre: 'Polea katana',                  grupo: 'Tríceps',  equipamiento: 'Polea',         musculos: ['Tríceps'],                       imgUrl: `${BASE}/659/a60452f1-e2ea-43fe-baa6-c1a2208d060c.png` },
-  { id: 'tri-18', nombre: 'Katana mancuerna',              grupo: 'Tríceps',  equipamiento: 'Mancuernas',    musculos: ['Tríceps'],                       imgUrl: `${BASE}/1519/fab7f641-27d4-40b5-8edd-1a0a137bfd94.gif` },
+  { id: 'tri-18', nombre: 'Katana mancuerna',              grupo: 'Tríceps',  equipamiento: 'Mancuernas',    musculos: ['Tríceps'],                       imgUrl: `${BASE}/1749/7510c8e5-b39f-4f0e-803c-c46f6357e267.png` },
 
   // ─── HOMBROS ─────────────────────────────────────────────────────────────────
   { id: 'hom-01', nombre: 'Press rotativa',                grupo: 'Hombros',  equipamiento: 'Máquina',       musculos: ['Deltoides'],                     imgUrl: `${BASE}/53/Shoulder-press-machine-2.png` },
@@ -99,7 +99,7 @@ export const EJERCICIOS = [
   { id: 'hom-13', nombre: 'Vuelo frontal',                 grupo: 'Hombros',  equipamiento: 'Mancuernas',    musculos: ['Deltoides anterior'],            imgUrl: `${BASE}/256/b7def5bc-2352-499b-b9e5-fff741003831.png` },
   { id: 'hom-14', nombre: 'Vuelo posterior cruzado',       grupo: 'Hombros',  equipamiento: 'Polea',         musculos: ['Deltoides posterior'],           imgUrl: `${BASE}/822/74affc0d-03b6-4f33-b5f4-a822a2615f68.png` },
   { id: 'hom-15', nombre: 'Vuelo posterior mancuerna',     grupo: 'Hombros',  equipamiento: 'Mancuernas',    musculos: ['Deltoides posterior'],           imgUrl: `${BASE}/829/ad724e5c-b1ed-49e8-9279-a17545b0dd0b.png` },
-  { id: 'hom-16', nombre: 'Posterior en polea',            grupo: 'Hombros',  equipamiento: 'Polea',         musculos: ['Deltoides posterior'],           imgUrl: `${BASE}/1227/57415c3c-2963-4130-9f6f-79f6a96113b6.gif` },
+  { id: 'hom-16', nombre: 'Posterior en polea',            grupo: 'Hombros',  equipamiento: 'Polea',         musculos: ['Deltoides posterior'],           imgUrl: `${BASE}/822/74affc0d-03b6-4f33-b5f4-a822a2615f68.png` },
   { id: 'hom-17', nombre: 'Posterior c/barra',             grupo: 'Hombros',  equipamiento: 'Barra',         musculos: ['Deltoides posterior', 'Trapecios'], imgUrl: `${BASE}/109/Barbell-rear-delt-row-1.png` },
   { id: 'hom-18', nombre: 'Posterior c/soga polea',        grupo: 'Hombros',  equipamiento: 'Polea',         musculos: ['Deltoides posterior'],           imgUrl: `${BASE}/822/74affc0d-03b6-4f33-b5f4-a822a2615f68.png` },
   { id: 'hom-19', nombre: 'Frontal mas Explosivo',         grupo: 'Hombros',  equipamiento: 'Barra',         musculos: ['Deltoides anterior', 'Trapecios'], imgUrl: `${BASE}/478/70a2d72c-a822-45f3-8de2-54ea85951b84.jpg` },
@@ -128,7 +128,7 @@ export const EJERCICIOS = [
   { id: 'bic-17', nombre: 'Biceps conc. c/barra',          grupo: 'Bíceps',   equipamiento: 'Barra',         musculos: ['Bíceps'],                        imgUrl: `${BASE}/193/Preacher-curl-3-1.png` },
 
   // ─── PIERNAS ─────────────────────────────────────────────────────────────────
-  { id: 'pie-01', nombre: 'Sentadilla máq. Smit',          grupo: 'Piernas',  equipamiento: 'Máquina Smith', musculos: ['Cuádriceps', 'Glúteos'],         imgUrl: `${BASE}/1593/9815fcd6-cf40-4ddd-9b38-2eac25973de1.gif` },
+  { id: 'pie-01', nombre: 'Sentadilla máq. Smit',          grupo: 'Piernas',  equipamiento: 'Máquina Smith', musculos: ['Cuádriceps', 'Glúteos'],         imgUrl: `${BASE}/1801/60043328-1cfb-4289-9865-aaf64d5aaa28.jpg` },
   { id: 'pie-02', nombre: 'Sentadilla c/barra',            grupo: 'Piernas',  equipamiento: 'Barra',         musculos: ['Cuádriceps', 'Glúteos'],         imgUrl: `${BASE}/1627/86d0b85a-66b7-4e5f-bf8d-bb4d7eb03f59.webp` },
   { id: 'pie-03', nombre: 'Sentadilla frontal',            grupo: 'Piernas',  equipamiento: 'Barra',         musculos: ['Cuádriceps'],                    imgUrl: `${BASE}/191/Front-squat-1-857x1024.png` },
   { id: 'pie-04', nombre: 'Sentadilla Sysy',               grupo: 'Piernas',  equipamiento: 'Barra',         musculos: ['Cuádriceps', 'Glúteos'],         imgUrl: `${BASE}/1801/60043328-1cfb-4289-9865-aaf64d5aaa28.jpg` },
