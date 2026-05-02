@@ -5,6 +5,7 @@ import ExerciseList from './pages/ExerciseList'
 import ExerciseDetail from './pages/ExerciseDetail'
 import WorkoutBuilder from './pages/WorkoutBuilder'
 import WorkoutSession from './pages/WorkoutSession'
+import MisDiccionario from './pages/MisDiccionario'
 
 export default function App() {
   return (
@@ -12,7 +13,8 @@ export default function App() {
       <div className="min-h-screen bg-gray-950">
         <Navbar />
         <Routes>
-          <Route path="/"                  element={<ExerciseList />} />
+          <Route path="/"                  element={<MisDiccionario />} />
+          <Route path="/biblioteca"        element={<ExerciseList />} />
           <Route path="/exercise/:id"      element={<ExerciseDetail />} />
           <Route path="/workout"           element={<WorkoutBuilder />} />
           <Route path="/workout/session"   element={<WorkoutSession />} />

@@ -5,7 +5,9 @@ export default function Navbar() {
   const { pathname } = useLocation()
   const { queue } = useWorkoutQueue()
 
-  const isWorkout = pathname.startsWith('/workout')
+  const isWorkout    = pathname.startsWith('/workout')
+  const isDiccionario = pathname === '/'
+  const isBiblioteca  = pathname === '/biblioteca' || pathname.startsWith('/exercise')
 
   return (
     <header className="sticky top-0 z-50 bg-gray-950/90 backdrop-blur border-b border-gray-800">
@@ -15,19 +17,28 @@ export default function Navbar() {
           <span className="text-white">Appnico<span className="text-brand-400">fit</span></span>
         </Link>
 
-        <div className="flex items-center gap-2 text-sm font-medium">
+        <div className="flex items-center gap-1 text-sm font-medium">
           <Link
             to="/"
-            className={`px-4 py-2 rounded-xl transition-colors ${
-              pathname === '/' ? 'bg-brand-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'
+            className={`px-3 py-2 rounded-xl transition-colors ${
+              isDiccionario ? 'bg-brand-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'
             }`}
           >
-            Ejercicios
+            Mis Ejercicios
+          </Link>
+
+          <Link
+            to="/biblioteca"
+            className={`px-3 py-2 rounded-xl transition-colors ${
+              isBiblioteca ? 'bg-brand-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'
+            }`}
+          >
+            Biblioteca
           </Link>
 
           <Link
             to="/workout"
-            className={`relative px-4 py-2 rounded-xl transition-colors flex items-center gap-2 ${
+            className={`relative px-3 py-2 rounded-xl transition-colors flex items-center gap-2 ${
               isWorkout ? 'bg-brand-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'
             }`}
           >
