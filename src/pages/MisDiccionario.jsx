@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { EJERCICIOS, GRUPOS } from '../data/ejercicios'
+import AnimatedExercise from '../components/AnimatedExercise'
 
 export default function MisDiccionario() {
   const [grupoActivo, setGrupoActivo] = useState(GRUPOS[0])
@@ -126,9 +127,6 @@ export default function MisDiccionario() {
 // ── Card ──────────────────────────────────────────────────────────────────────
 
 function EjercicioCard({ ejercicio, onClick }) {
-  const [imgError, setImgError]   = useState(false)
-  const [imgLoaded, setImgLoaded] = useState(false)
-
   return (
     <div
       role="button"
@@ -138,27 +136,12 @@ function EjercicioCard({ ejercicio, onClick }) {
       className="card flex flex-col cursor-pointer active:scale-95 transition-transform duration-100"
       style={{ WebkitTapHighlightColor: 'transparent' }}
     >
-      <div className="relative aspect-square bg-gray-800 overflow-hidden rounded-t-2xl">
-        {!imgLoaded && !imgError && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-7 h-7 rounded-full border-2 border-brand-500 border-t-transparent animate-spin" />
-          </div>
-        )}
-        {!imgError ? (
-          <img
-            src={ejercicio.imgUrl}
-            alt={ejercicio.nombre}
-            loading="lazy"
-            onLoad={() => setImgLoaded(true)}
-            onError={() => setImgError(true)}
-            className={`w-full h-full object-cover transition-opacity duration-300 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-gray-600">
-            <span className="text-3xl">🏋️</span>
-          </div>
-        )}
-      </div>
+      <AnimatedExercise
+        frames={ejercicio.frames}
+        alt={ejercicio.nombre}
+        className="aspect-square rounded-t-2xl"
+        fps={1.5}
+      />
       <div className="p-2.5 flex flex-col gap-1">
         <p className="text-xs font-semibold text-white leading-tight">{ejercicio.nombre}</p>
         <span className="badge text-xs w-fit">{ejercicio.equipamiento}</span>
@@ -171,7 +154,7 @@ EjercicioCard.propTypes = {
   ejercicio: PropTypes.shape({
     id:           PropTypes.string.isRequired,
     nombre:       PropTypes.string.isRequired,
-    imgUrl:       PropTypes.string.isRequired,
+    frames:       PropTypes.arrayOf(PropTypes.string).isRequired,
     equipamiento: PropTypes.string.isRequired,
   }).isRequired,
   onClick: PropTypes.func.isRequired,
@@ -180,9 +163,6 @@ EjercicioCard.propTypes = {
 // ── Detail Modal ──────────────────────────────────────────────────────────────
 
 function DetalleModal({ ejercicio, indice, total, onClose, onPrev, onNext }) {
-  const [imgLoaded, setImgLoaded] = useState(false)
-  const [imgError, setImgError]   = useState(false)
-
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       {/* Backdrop — tap to close */}
@@ -199,28 +179,14 @@ function DetalleModal({ ejercicio, indice, total, onClose, onPrev, onNext }) {
           <div className="w-10 h-1 rounded-full bg-gray-600" />
         </div>
 
-        {/* Image */}
+        {/* Animated image */}
         <div className="relative w-full" style={{ aspectRatio: '1/1', maxHeight: '55vw' }}>
-          {!imgLoaded && !imgError && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
-              <div className="w-10 h-10 rounded-full border-2 border-brand-500 border-t-transparent animate-spin" />
-            </div>
-          )}
-          {!imgError ? (
-            <img
-              key={ejercicio.id}
-              src={ejercicio.imgUrl}
-              alt={ejercicio.nombre}
-              onLoad={() => setImgLoaded(true)}
-              onError={() => setImgError(true)}
-              className={`w-full h-full object-contain bg-gray-800 transition-opacity duration-300 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-800 flex flex-col items-center justify-center gap-3 text-gray-500">
-              <span className="text-5xl">🏋️</span>
-              <span className="text-sm">Imagen no disponible</span>
-            </div>
-          )}
+          <AnimatedExercise
+            frames={ejercicio.frames}
+            alt={ejercicio.nombre}
+            className="w-full h-full"
+            fps={1.5}
+          />
 
           {/* Close */}
           <button
