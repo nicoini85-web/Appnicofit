@@ -1,16 +1,30 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { EJERCICIOS, GRUPOS } from '../data/ejercicios'
 
 export default function MisDiccionario() {
   const [grupoActivo, setGrupoActivo] = useState(GRUPOS[0])
   const [busqueda, setBusqueda]       = useState('')
-  const [detalle, setDetalle]         = useState(null)
+  const [detalleIdx, setDetalleIdx]   = useState(null) // index in ejerciciosFiltrados
 
   const ejerciciosFiltrados = EJERCICIOS.filter(ej => {
     if (busqueda) return ej.nombre.toLowerCase().includes(busqueda.toLowerCase())
     return ej.grupo === grupoActivo
   })
+
+  const cerrar = useCallback(() => setDetalleIdx(null), [])
+
+  // Close with hardware back / Escape
+  useEffect(() => {
+    if (detalleIdx === null) return
+    const handler = (e) => { if (e.key === 'Escape') cerrar() }
+    window.addEventListener('keydown', handler)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', handler)
+      document.body.style.overflow = ''
+    }
+  }, [detalleIdx, cerrar])
 
   return (
     <>
@@ -21,7 +35,7 @@ export default function MisDiccionario() {
             Diccionario de <span className="text-brand-400">Ejercicios</span>
           </h1>
           <p className="text-gray-400 text-sm">
-            {EJERCICIOS.length} ejercicios · toca cualquiera para ver el detalle
+            {EJERCICIOS.length} ejercicios · tocá cualquiera para ver el detalle
           </p>
         </div>
 
@@ -36,7 +50,7 @@ export default function MisDiccionario() {
             type="text"
             placeholder="Buscar ejercicio..."
             value={busqueda}
-            onChange={e => setBusqueda(e.target.value)}
+            onChange={e => { setBusqueda(e.target.value); setDetalleIdx(null) }}
             className="w-full bg-gray-900 border border-gray-700 rounded-xl pl-10 pr-10 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-colors"
           />
           {busqueda && (
@@ -57,7 +71,7 @@ export default function MisDiccionario() {
             {GRUPOS.map(g => (
               <button
                 key={g}
-                onClick={() => setGrupoActivo(g)}
+                onClick={() => { setGrupoActivo(g); setDetalleIdx(null) }}
                 className={`px-4 py-2 rounded-xl text-sm font-semibold transition-colors ${
                   grupoActivo === g
                     ? 'bg-brand-600 text-white'
@@ -84,36 +98,25 @@ export default function MisDiccionario() {
 
         {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-          {ejerciciosFiltrados.map(ej => (
-            <EjercicioCard key={ej.id} ejercicio={ej} onClick={() => setDetalle(ej)} />
+          {ejerciciosFiltrados.map((ej, idx) => (
+            <EjercicioCard
+              key={ej.id}
+              ejercicio={ej}
+              onClick={() => setDetalleIdx(idx)}
+            />
           ))}
         </div>
       </main>
 
-      {/* Detail modal */}
-      {detalle && (
+      {/* Detail modal — rendered outside main, at root level */}
+      {detalleIdx !== null && ejerciciosFiltrados[detalleIdx] && (
         <DetalleModal
-          ejercicio={detalle}
-          onClose={() => setDetalle(null)}
-          onPrev={() => {
-            const lista = busqueda ? ejerciciosFiltrados : EJERCICIOS.filter(e => e.grupo === detalle.grupo)
-            const pos = lista.findIndex(e => e.id === detalle.id)
-            if (pos > 0) setDetalle(lista[pos - 1])
-          }}
-          onNext={() => {
-            const lista = busqueda ? ejerciciosFiltrados : EJERCICIOS.filter(e => e.grupo === detalle.grupo)
-            const pos = lista.findIndex(e => e.id === detalle.id)
-            if (pos < lista.length - 1) setDetalle(lista[pos + 1])
-          }}
-          hasPrev={() => {
-            const lista = busqueda ? ejerciciosFiltrados : EJERCICIOS.filter(e => e.grupo === detalle.grupo)
-            return lista.findIndex(e => e.id === detalle.id) > 0
-          }}
-          hasNext={() => {
-            const lista = busqueda ? ejerciciosFiltrados : EJERCICIOS.filter(e => e.grupo === detalle.grupo)
-            const pos = lista.findIndex(e => e.id === detalle.id)
-            return pos < lista.length - 1
-          }}
+          ejercicio={ejerciciosFiltrados[detalleIdx]}
+          indice={detalleIdx}
+          total={ejerciciosFiltrados.length}
+          onClose={cerrar}
+          onPrev={() => setDetalleIdx(i => Math.max(0, i - 1))}
+          onNext={() => setDetalleIdx(i => Math.min(ejerciciosFiltrados.length - 1, i + 1))}
         />
       )}
     </>
@@ -127,11 +130,15 @@ function EjercicioCard({ ejercicio, onClick }) {
   const [imgLoaded, setImgLoaded] = useState(false)
 
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={onClick}
-      className="card group flex flex-col text-left w-full hover:shadow-xl hover:shadow-brand-900/20 hover:-translate-y-0.5 transition-all duration-200 active:scale-95"
+      onKeyDown={e => e.key === 'Enter' && onClick()}
+      className="card flex flex-col cursor-pointer active:scale-95 transition-transform duration-100"
+      style={{ WebkitTapHighlightColor: 'transparent' }}
     >
-      <div className="relative aspect-square bg-gray-800 overflow-hidden">
+      <div className="relative aspect-square bg-gray-800 overflow-hidden rounded-t-2xl">
         {!imgLoaded && !imgError && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="w-7 h-7 rounded-full border-2 border-brand-500 border-t-transparent animate-spin" />
@@ -151,20 +158,12 @@ function EjercicioCard({ ejercicio, onClick }) {
             <span className="text-3xl">🏋️</span>
           </div>
         )}
-        {/* Hover overlay */}
-        <div className="absolute inset-0 bg-brand-600/0 group-hover:bg-brand-600/10 transition-colors duration-200 flex items-center justify-center">
-          <svg className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 drop-shadow-lg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </div>
       </div>
       <div className="p-2.5 flex flex-col gap-1">
-        <p className="text-xs font-semibold text-white leading-tight group-hover:text-brand-300 transition-colors">
-          {ejercicio.nombre}
-        </p>
+        <p className="text-xs font-semibold text-white leading-tight">{ejercicio.nombre}</p>
         <span className="badge text-xs w-fit">{ejercicio.equipamiento}</span>
       </div>
-    </button>
+    </div>
   )
 }
 
@@ -180,53 +179,53 @@ EjercicioCard.propTypes = {
 
 // ── Detail Modal ──────────────────────────────────────────────────────────────
 
-function DetalleModal({ ejercicio, onClose, onPrev, onNext, hasPrev, hasNext }) {
+function DetalleModal({ ejercicio, indice, total, onClose, onPrev, onNext }) {
   const [imgLoaded, setImgLoaded] = useState(false)
   const [imgError, setImgError]   = useState(false)
 
-  // Reset image state when ejercicio changes
-  const key = ejercicio.id
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-      onClick={onClose}
-    >
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-
-      {/* Panel */}
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
+      {/* Backdrop — tap to close */}
       <div
-        className="relative z-10 w-full sm:max-w-lg bg-gray-900 rounded-t-2xl sm:rounded-2xl border border-gray-700 shadow-2xl overflow-hidden"
-        onClick={e => e.stopPropagation()}
-      >
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        onClick={onClose}
+      />
+
+      {/* Sheet */}
+      <div className="relative z-10 w-full sm:max-w-lg bg-gray-900 rounded-t-3xl sm:rounded-2xl border border-gray-700 shadow-2xl">
+
+        {/* Drag handle (visual only) */}
+        <div className="flex justify-center pt-3 pb-1 sm:hidden">
+          <div className="w-10 h-1 rounded-full bg-gray-600" />
+        </div>
+
         {/* Image */}
-        <div className="relative aspect-square bg-gray-800 w-full">
+        <div className="relative w-full" style={{ aspectRatio: '1/1', maxHeight: '55vw' }}>
           {!imgLoaded && !imgError && (
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
               <div className="w-10 h-10 rounded-full border-2 border-brand-500 border-t-transparent animate-spin" />
             </div>
           )}
           {!imgError ? (
             <img
-              key={key}
+              key={ejercicio.id}
               src={ejercicio.imgUrl}
               alt={ejercicio.nombre}
               onLoad={() => setImgLoaded(true)}
               onError={() => setImgError(true)}
-              className={`w-full h-full object-contain transition-opacity duration-300 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-full object-contain bg-gray-800 transition-opacity duration-300 ${imgLoaded ? 'opacity-100' : 'opacity-0'}`}
             />
           ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-gray-500">
-              <span className="text-6xl">🏋️</span>
+            <div className="w-full h-full bg-gray-800 flex flex-col items-center justify-center gap-3 text-gray-500">
+              <span className="text-5xl">🏋️</span>
               <span className="text-sm">Imagen no disponible</span>
             </div>
           )}
 
-          {/* Close button */}
+          {/* Close */}
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-950/80 flex items-center justify-center text-gray-300 hover:text-white transition-colors"
+            className="absolute top-3 right-3 w-8 h-8 rounded-full bg-gray-950/80 flex items-center justify-center text-gray-300 active:scale-90 transition-transform"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
@@ -237,17 +236,25 @@ function DetalleModal({ ejercicio, onClose, onPrev, onNext, hasPrev, hasNext }) 
           <div className="absolute top-3 left-3">
             <span className="badge badge-green text-xs">{ejercicio.grupo}</span>
           </div>
+
+          {/* Counter */}
+          <div className="absolute bottom-3 right-3 bg-gray-950/70 rounded-full px-2.5 py-0.5 text-xs text-gray-300">
+            {indice + 1} / {total}
+          </div>
         </div>
 
         {/* Info */}
-        <div className="p-5 space-y-4">
-          <h2 className="text-xl font-extrabold text-white capitalize">{ejercicio.nombre}</h2>
+        <div className="px-5 pt-4 pb-5 space-y-4">
+          <h2 className="text-xl font-extrabold text-white">{ejercicio.nombre}</h2>
 
-          <div className="space-y-2.5">
-            <InfoRow label="Equipamiento" value={ejercicio.equipamiento} />
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <p className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-1.5">Músculos</p>
-              <div className="flex flex-wrap gap-1.5">
+              <p className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-1">Equipamiento</p>
+              <p className="text-sm text-white">{ejercicio.equipamiento}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-1">Músculos</p>
+              <div className="flex flex-wrap gap-1">
                 {ejercicio.musculos.map(m => (
                   <span key={m} className="badge badge-green text-xs">{m}</span>
                 ))}
@@ -256,11 +263,11 @@ function DetalleModal({ ejercicio, onClose, onPrev, onNext, hasPrev, hasNext }) 
           </div>
 
           {/* Prev / Next */}
-          <div className="flex gap-3 pt-1">
+          <div className="flex gap-3">
             <button
               onClick={onPrev}
-              disabled={!hasPrev()}
-              className="btn-ghost flex-1 flex items-center justify-center gap-1.5 disabled:opacity-30"
+              disabled={indice === 0}
+              className="btn-ghost flex-1 flex items-center justify-center gap-1.5 disabled:opacity-30 py-3"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -269,8 +276,8 @@ function DetalleModal({ ejercicio, onClose, onPrev, onNext, hasPrev, hasNext }) 
             </button>
             <button
               onClick={onNext}
-              disabled={!hasNext()}
-              className="btn-ghost flex-1 flex items-center justify-center gap-1.5 disabled:opacity-30"
+              disabled={indice === total - 1}
+              className="btn-ghost flex-1 flex items-center justify-center gap-1.5 disabled:opacity-30 py-3"
             >
               Siguiente
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -284,25 +291,11 @@ function DetalleModal({ ejercicio, onClose, onPrev, onNext, hasPrev, hasNext }) 
   )
 }
 
-function InfoRow({ label, value }) {
-  return (
-    <div>
-      <p className="text-xs text-gray-500 uppercase tracking-wider font-medium mb-0.5">{label}</p>
-      <p className="text-sm text-white">{value}</p>
-    </div>
-  )
-}
-
 DetalleModal.propTypes = {
   ejercicio: PropTypes.object.isRequired,
-  onClose:  PropTypes.func.isRequired,
-  onPrev:   PropTypes.func.isRequired,
-  onNext:   PropTypes.func.isRequired,
-  hasPrev:  PropTypes.func.isRequired,
-  hasNext:  PropTypes.func.isRequired,
-}
-
-InfoRow.propTypes = {
-  label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  indice:    PropTypes.number.isRequired,
+  total:     PropTypes.number.isRequired,
+  onClose:   PropTypes.func.isRequired,
+  onPrev:    PropTypes.func.isRequired,
+  onNext:    PropTypes.func.isRequired,
 }
