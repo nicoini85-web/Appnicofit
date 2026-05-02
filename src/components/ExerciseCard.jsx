@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { useWorkoutQueue } from '../context/WorkoutContext'
+import { tBodyPart, tMuscle, tEquipment } from '../utils/translations'
 
 export default function ExerciseCard({ exercise }) {
-  const [gifError, setGifError] = useState(false)
+  const [gifError, setGifError]   = useState(false)
   const [gifLoaded, setGifLoaded] = useState(false)
 
   const { addExercise, removeExercise, queue } = useWorkoutQueue()
@@ -15,11 +16,8 @@ export default function ExerciseCard({ exercise }) {
   function handleQueueToggle(e) {
     e.preventDefault()
     e.stopPropagation()
-    if (inQueue) {
-      removeExercise(exerciseId)
-    } else {
-      addExercise(exercise)
-    }
+    if (inQueue) removeExercise(exerciseId)
+    else addExercise(exercise)
   }
 
   return (
@@ -49,7 +47,7 @@ export default function ExerciseCard({ exercise }) {
 
         {/* Muscle hover label */}
         <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-gray-950/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <span className="text-xs text-brand-300 font-medium capitalize">{targetMuscles[0]}</span>
+          <span className="text-xs text-brand-300 font-medium">{tMuscle(targetMuscles[0])}</span>
         </div>
 
         {/* Add to workout button */}
@@ -81,10 +79,10 @@ export default function ExerciseCard({ exercise }) {
         </h3>
         <div className="flex flex-wrap gap-1">
           {bodyParts.map((bp) => (
-            <span key={bp} className="badge capitalize">{bp}</span>
+            <span key={bp} className="badge">{tBodyPart(bp)}</span>
           ))}
           {equipments.slice(0, 1).map((eq) => (
-            <span key={eq} className="badge badge-green capitalize">{eq}</span>
+            <span key={eq} className="badge badge-green">{tEquipment(eq)}</span>
           ))}
         </div>
       </div>
@@ -94,11 +92,11 @@ export default function ExerciseCard({ exercise }) {
 
 ExerciseCard.propTypes = {
   exercise: PropTypes.shape({
-    exerciseId:      PropTypes.string.isRequired,
-    name:            PropTypes.string.isRequired,
-    gifUrl:          PropTypes.string.isRequired,
-    bodyParts:       PropTypes.arrayOf(PropTypes.string).isRequired,
-    equipments:      PropTypes.arrayOf(PropTypes.string).isRequired,
-    targetMuscles:   PropTypes.arrayOf(PropTypes.string).isRequired,
+    exerciseId:    PropTypes.string.isRequired,
+    name:          PropTypes.string.isRequired,
+    gifUrl:        PropTypes.string.isRequired,
+    bodyParts:     PropTypes.arrayOf(PropTypes.string).isRequired,
+    equipments:    PropTypes.arrayOf(PropTypes.string).isRequired,
+    targetMuscles: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
 }

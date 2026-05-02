@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useWorkoutQueue } from '../context/WorkoutContext'
 import { useSessionTimer } from '../hooks/useSessionTimer'
+import { tBodyPart, tMuscle, tEquipment } from '../utils/translations'
 
 export default function WorkoutSession() {
   const { queue, clearQueue } = useWorkoutQueue()
@@ -15,14 +16,12 @@ export default function WorkoutSession() {
 
   const timer = useSessionTimer(true)
 
-  // If no exercises queued, redirect to builder
   useEffect(() => {
     if (queue.length === 0) navigate('/workout')
   }, [queue, navigate])
 
   const exercise = queue[currentIndex]
 
-  // Reset GIF state when exercise changes
   useEffect(() => {
     setGifLoaded(false)
     setGifError(false)
@@ -76,8 +75,8 @@ export default function WorkoutSession() {
             ¡Entrenamiento <span className="text-brand-400">completado!</span>
           </h1>
           <div className="grid grid-cols-3 gap-4">
-            <Stat label="Tiempo" value={timer.formatted} />
-            <Stat label="Ejercicios" value={`${completed.length}/${queue.length}`} />
+            <Stat label="Tiempo"      value={timer.formatted} />
+            <Stat label="Ejercicios"  value={`${completed.length}/${queue.length}`} />
             <Stat label="Completados" value={`${Math.round((completed.length / queue.length) * 100)}%`} />
           </div>
           <div className="space-y-3">
@@ -104,7 +103,7 @@ export default function WorkoutSession() {
           </div>
           <div className="flex gap-3">
             <button onClick={handleRestart} className="btn-ghost flex-1">Repetir</button>
-            <button onClick={handleExit} className="btn-primary flex-1">Finalizar</button>
+            <button onClick={handleExit}    className="btn-primary flex-1">Finalizar</button>
           </div>
         </div>
       </main>
@@ -119,7 +118,6 @@ export default function WorkoutSession() {
       {/* Top bar */}
       <div className="bg-gray-900 border-b border-gray-800 px-4 py-3">
         <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
-          {/* Progress */}
           <div className="flex-1">
             <div className="flex items-center justify-between text-xs text-gray-400 mb-1.5">
               <span>{completed.length}/{queue.length} ejercicios</span>
@@ -133,7 +131,6 @@ export default function WorkoutSession() {
             </div>
           </div>
 
-          {/* Timer */}
           <div className="flex items-center gap-2">
             <span className="font-mono text-lg font-bold text-white tabular-nums">{timer.formatted}</span>
             <button
@@ -153,7 +150,6 @@ export default function WorkoutSession() {
             </button>
           </div>
 
-          {/* Exit */}
           <button
             onClick={handleFinishEarly}
             className="text-xs text-gray-500 hover:text-red-400 transition-colors"
@@ -167,7 +163,6 @@ export default function WorkoutSession() {
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
         <div className="w-full max-w-3xl space-y-6">
 
-          {/* Exercise counter */}
           <div className="text-center">
             <p className="text-xs text-gray-500 uppercase tracking-widest font-medium mb-1">
               Ejercicio {currentIndex + 1} de {queue.length}
@@ -177,7 +172,7 @@ export default function WorkoutSession() {
             </h1>
           </div>
 
-          {/* GIF card */}
+          {/* GIF */}
           <div className="relative mx-auto w-full max-w-sm aspect-square rounded-2xl overflow-hidden bg-gray-900 border border-gray-800 shadow-2xl shadow-black/40">
             {!gifLoaded && !gifError && (
               <div className="absolute inset-0 flex items-center justify-center">
@@ -200,7 +195,6 @@ export default function WorkoutSession() {
               </div>
             )}
 
-            {/* Completed badge */}
             {completed.includes(exercise.exerciseId) && (
               <div className="absolute inset-0 bg-brand-950/80 flex items-center justify-center">
                 <div className="flex flex-col items-center gap-2 text-brand-300">
@@ -213,35 +207,28 @@ export default function WorkoutSession() {
             )}
           </div>
 
-          {/* Muscle / Equipment badges */}
+          {/* Badges */}
           <div className="flex flex-wrap justify-center gap-2">
             {exercise.targetMuscles.map((m) => (
-              <span key={m} className="badge badge-green capitalize">{m}</span>
+              <span key={m} className="badge badge-green">{tMuscle(m)}</span>
             ))}
             {exercise.bodyParts.map((bp) => (
-              <span key={bp} className="badge capitalize">{bp}</span>
+              <span key={bp} className="badge">{tBodyPart(bp)}</span>
             ))}
             {exercise.equipments.map((eq) => (
-              <span key={eq} className="badge capitalize">{eq}</span>
+              <span key={eq} className="badge">{tEquipment(eq)}</span>
             ))}
           </div>
 
           {/* Controls */}
           <div className="flex items-center justify-center gap-3">
-            <button
-              onClick={goPrev}
-              disabled={currentIndex === 0}
-              className="btn-ghost px-5 disabled:opacity-30"
-            >
+            <button onClick={goPrev} disabled={currentIndex === 0} className="btn-ghost px-5 disabled:opacity-30">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
 
-            <button
-              onClick={markDone}
-              className="btn-primary px-8 py-3 text-base"
-            >
+            <button onClick={markDone} className="btn-primary px-8 py-3 text-base">
               {completed.includes(exercise.exerciseId)
                 ? 'Siguiente'
                 : currentIndex === queue.length - 1
@@ -249,18 +236,14 @@ export default function WorkoutSession() {
                   : 'Listo ✓'}
             </button>
 
-            <button
-              onClick={goNext}
-              disabled={currentIndex === queue.length - 1}
-              className="btn-ghost px-5 disabled:opacity-30"
-            >
+            <button onClick={goNext} disabled={currentIndex === queue.length - 1} className="btn-ghost px-5 disabled:opacity-30">
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
           </div>
 
-          {/* Exercise list strip */}
+          {/* Exercise strip */}
           <div className="flex gap-2 justify-center flex-wrap">
             {queue.map((ex, i) => (
               <button

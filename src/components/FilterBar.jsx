@@ -1,26 +1,14 @@
 import { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { getFilterOptions } from '../services/exercisedb'
+import { tBodyPart, tEquipment, BODY_PARTS_ES, EQUIPMENT_ES } from '../utils/translations'
 
-const BODY_PARTS = [
-  'back', 'cardio', 'chest', 'lower arms', 'lower legs',
-  'neck', 'shoulders', 'upper arms', 'upper legs', 'waist',
-]
-
-const EQUIPMENT = [
-  'assisted', 'band', 'barbell', 'body weight', 'bosu ball',
-  'cable', 'dumbbell', 'elliptical machine', 'ez barbell',
-  'hammer', 'kettlebell', 'leverage machine', 'medicine ball',
-  'olympic barbell', 'resistance band', 'roller', 'rope',
-  'skierg machine', 'sled machine', 'smith machine',
-  'stability ball', 'stationary bike', 'stepmill machine',
-  'tire', 'trap bar', 'upper body ergometer', 'weighted',
-  'wheel roller',
-]
+const BODY_PARTS_KEYS = Object.keys(BODY_PARTS_ES)
+const EQUIPMENT_KEYS  = Object.keys(EQUIPMENT_ES)
 
 export default function FilterBar({ search, onSearch, bodyPart, onBodyPart, equipment, onEquipment }) {
-  const [dynamicBodyParts, setDynamicBodyParts] = useState(BODY_PARTS)
-  const [dynamicEquipment, setDynamicEquipment] = useState(EQUIPMENT)
+  const [dynamicBodyParts, setDynamicBodyParts] = useState(BODY_PARTS_KEYS)
+  const [dynamicEquipment, setDynamicEquipment] = useState(EQUIPMENT_KEYS)
 
   useEffect(() => {
     getFilterOptions()
@@ -75,11 +63,11 @@ export default function FilterBar({ search, onSearch, bodyPart, onBodyPart, equi
             <button
               key={bp}
               onClick={() => onBodyPart(bp === bodyPart ? '' : bp)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium capitalize transition-colors ${
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
                 bodyPart === bp ? 'bg-brand-600 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-white'
               }`}
             >
-              {bp}
+              {tBodyPart(bp)}
             </button>
           ))}
         </div>
@@ -91,11 +79,11 @@ export default function FilterBar({ search, onSearch, bodyPart, onBodyPart, equi
         <select
           value={equipment}
           onChange={(e) => onEquipment(e.target.value)}
-          className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-colors capitalize"
+          className="bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-colors"
         >
           <option value="">Cualquier equipamiento</option>
           {dynamicEquipment.map((eq) => (
-            <option key={eq} value={eq} className="capitalize">{eq}</option>
+            <option key={eq} value={eq}>{tEquipment(eq)}</option>
           ))}
         </select>
       </div>

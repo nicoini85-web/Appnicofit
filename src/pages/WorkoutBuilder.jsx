@@ -4,6 +4,7 @@ import { useWorkoutQueue } from '../context/WorkoutContext'
 import { useExercises } from '../hooks/useExercises'
 import FilterBar from '../components/FilterBar'
 import LoadMore from '../components/LoadMore'
+import { tBodyPart, tMuscle } from '../utils/translations'
 
 export default function WorkoutBuilder() {
   const navigate = useNavigate()
@@ -154,10 +155,10 @@ function ExercisePickerRow({ exercise, added, onAdd, onRemove }) {
         <p className="text-sm font-semibold text-white capitalize truncate">{name}</p>
         <div className="flex gap-1 mt-0.5 flex-wrap">
           {bodyParts.slice(0, 2).map((bp) => (
-            <span key={bp} className="badge text-xs capitalize">{bp}</span>
+            <span key={bp} className="badge text-xs">{tBodyPart(bp)}</span>
           ))}
           {targetMuscles.slice(0, 1).map((m) => (
-            <span key={m} className="badge badge-green text-xs capitalize">{m}</span>
+            <span key={m} className="badge badge-green text-xs">{tMuscle(m)}</span>
           ))}
         </div>
       </div>
