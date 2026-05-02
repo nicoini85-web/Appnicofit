@@ -1,7 +1,11 @@
 import { Link, useLocation } from 'react-router-dom'
+import { useWorkoutQueue } from '../context/WorkoutContext'
 
 export default function Navbar() {
   const { pathname } = useLocation()
+  const { queue } = useWorkoutQueue()
+
+  const isWorkout = pathname.startsWith('/workout')
 
   return (
     <header className="sticky top-0 z-50 bg-gray-950/90 backdrop-blur border-b border-gray-800">
@@ -19,6 +23,22 @@ export default function Navbar() {
             }`}
           >
             Ejercicios
+          </Link>
+
+          <Link
+            to="/workout"
+            className={`relative px-4 py-2 rounded-xl transition-colors flex items-center gap-2 ${
+              isWorkout ? 'bg-brand-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-800'
+            }`}
+          >
+            Entrenar
+            {queue.length > 0 && (
+              <span className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold ${
+                isWorkout ? 'bg-white text-brand-600' : 'bg-brand-500 text-white'
+              }`}>
+                {queue.length}
+              </span>
+            )}
           </Link>
         </div>
       </nav>

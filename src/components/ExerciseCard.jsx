@@ -1,16 +1,30 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { useWorkoutQueue } from '../context/WorkoutContext'
 
 export default function ExerciseCard({ exercise }) {
   const [gifError, setGifError] = useState(false)
   const [gifLoaded, setGifLoaded] = useState(false)
 
+  const { addExercise, removeExercise, queue } = useWorkoutQueue()
+  const inQueue = queue.some((e) => e.exerciseId === exercise.exerciseId)
+
   const { exerciseId, name, gifUrl, bodyParts, equipments, targetMuscles } = exercise
+
+  function handleQueueToggle(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (inQueue) {
+      removeExercise(exerciseId)
+    } else {
+      addExercise(exercise)
+    }
+  }
 
   return (
     <Link to={`/exercise/${exerciseId}`} className="card group block hover:shadow-xl hover:shadow-brand-900/20 hover:-translate-y-0.5 transition-all duration-200">
-      {/* GIF / Thumbnail */}
+      {/* GIF */}
       <div className="relative aspect-square bg-gray-800 overflow-hidden">
         {!gifLoaded && !gifError && (
           <div className="absolute inset-0 flex items-center justify-center">
@@ -32,10 +46,32 @@ export default function ExerciseCard({ exercise }) {
             <span className="text-xs">Sin imagen</span>
           </div>
         )}
-        {/* Overlay muscle tag */}
+
+        {/* Muscle hover label */}
         <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-gray-950/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <span className="text-xs text-brand-300 font-medium capitalize">{targetMuscles[0]}</span>
         </div>
+
+        {/* Add to workout button */}
+        <button
+          onClick={handleQueueToggle}
+          title={inQueue ? 'Quitar del entrenamiento' : 'Agregar al entrenamiento'}
+          className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center shadow-lg transition-all duration-150 opacity-0 group-hover:opacity-100 ${
+            inQueue
+              ? 'bg-brand-500 text-white hover:bg-red-500'
+              : 'bg-gray-950/80 text-gray-300 hover:bg-brand-600 hover:text-white'
+          }`}
+        >
+          {inQueue ? (
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+            </svg>
+          ) : (
+            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+            </svg>
+          )}
+        </button>
       </div>
 
       {/* Info */}
